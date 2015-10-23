@@ -177,8 +177,9 @@ abstract class SMTLIBSolver(val context: LeonContext, val program: Program)
     case RawArrayType(from, to) =>
       r
 
-    case FunctionType(from, to) =>
-      r
+    case ft @ FunctionType(from, to) =>
+      val elems = r.elems.toSeq.map { case (k, v) => unwrapTuple(k, from.size) -> v }
+      PartialLambda(elems, Some(r.default), ft)
 
     case MapType(from, to) =>
       // We expect a RawArrayValue with keys in from and values in Option[to],
